@@ -25,7 +25,11 @@ export default async function TicketList() {
               height={100}
               style={{ borderRadius: "8px" }}
             />
-            <p>{ticket.body.slice(0, 200)}...</p>
+            {typeof ticket.body === "string" && ticket.body.length > 200 ? (
+              <p>{ticket.body.slice(0, 200)}...</p>
+            ) : (
+              <p>{ticket.body}</p>
+            )}
             <div className={`pill ${ticket.priority}`}>
               {ticket.priority} priority
             </div>
