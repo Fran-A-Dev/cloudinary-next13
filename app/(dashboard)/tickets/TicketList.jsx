@@ -1,12 +1,18 @@
-import Image from "next/image";
 import Link from "next/link";
+import Image from "next/image";
+import { cookies } from "next/headers";
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+
 async function getTickets() {
-  const res = await fetch("http://localhost:4000/tickets", {
-    next: {
-      revalidate: 0,
-    },
-  });
-  return res.json();
+  const supabase = createServerComponentClient({ cookies });
+
+  const { data, error } = await supabase.from("tickets").select();
+
+  if (error) {
+    console.log(error.message);
+  }
+
+  return data;
 }
 
 export default async function TicketList() {
@@ -19,7 +25,7 @@ export default async function TicketList() {
           <Link href={`/tickets/${ticket.id}`}>
             <h3>{ticket.title}</h3>
             <Image
-              src={ticket.image_src}
+              src={ticket.image}
               alt="image"
               width={150}
               height={100}
