@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { cookies } from "next/headers";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 
+import DeleteButton from "./DeleteButton.jsx";
+
 export const dynamicParams = true;
 
 export async function generateMetadata({ params }) {
@@ -38,10 +40,18 @@ async function getTicket(id) {
 export default async function TicketDetails({ params }) {
   const ticket = await getTicket(params.id);
 
+  const supabase = createServerComponentClient({ cookies });
+  const { data } = await supabase.auth.getSession();
+
   return (
     <main>
       <nav>
         <h2>Image Details and Blog</h2>
+        <div className="ml-auto">
+          {data.session.user.email === ticket.user_email && (
+            <DeleteButton id={ticket.id} />
+          )}
+        </div>
       </nav>
       <div className="card">
         <div className="flex items-center justify-center">
